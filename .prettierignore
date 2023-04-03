@@ -1,0 +1,13 @@
+node_modules
+
+dist
+build
+
+*.json
+*.md
+*.txt
+
+src/assets/**/*.jpg
+src/assets/**/*.png
+
+_*.*

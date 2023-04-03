@@ -1,0 +1,6 @@
+ng generate component path**/*.*
+
+ng serve --open
+
+sample ng gen command:
+ng generate component shared/components/spinner --skipTests 
