@@ -1,5 +1,11 @@
 <ng-container>
   <app-side-nav-outer-toolbar title="{{ appInfo.title }}">
-    <router-outlet></router-outlet>
+    <app-spinner *ngIf="showLoadingSpinner$ | async"></app-spinner>
+
+    <div class="alert alert-danger" *ngIf="errorMessage$ | async as error">
+      {{ error }}
+    </div>
+
+    <router-outlet> </router-outlet>
   </app-side-nav-outer-toolbar>
 </ng-container>
