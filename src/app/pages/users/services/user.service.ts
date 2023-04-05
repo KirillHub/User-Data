@@ -2,21 +2,23 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ErrorService } from 'src/app/shared/services/error.service';
+import{ UserResult } from '../models/User.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient, private errorService: ErrorService) {}
-  private apiUrl = 'https://randomuser.me/api/';
+  numberOfRequestedUsers = 100;
+  apiUrl = 'https://randomuser.me/api/';
 
-  getUser(): Observable<any> {
+  constructor(private http: HttpClient, private errorService: ErrorService) {}
+
+  getUser(): Observable<UserResult[]> {
     const url = `${this.apiUrl}?inc=name,gender,email,phone,picture,location&noinfo&nat=us`;
-    return this.http
-      .get<any>(url)
-      // .pipe
-      // catchError(this.errorService.handle('aa'))
-      // ();
+    return this.http.get<UserResult[]>(url);
+    // .pipe
+    // catchError(this.errorService.handle('aa'))
+    // ();
   }
 
   /*

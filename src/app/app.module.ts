@@ -5,14 +5,14 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule, StoreDevtoolsOptions } from '@ngrx/store-devtools';
 import { HttpClientModule } from '@angular/common/http';
-import { DxLoadIndicatorComponent, DxLoadIndicatorModule } from 'devextreme-angular';
+import { DxLoadIndicatorModule } from 'devextreme-angular';
 
 import { AppComponent } from './app.component';
 import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule } from './layouts';
 import { ScreenService, AppInfoService } from './shared/services';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorComponent } from './shared/components/error-data/error-data.component';
-import { UsersDataService } from './shared/services/users-data.service';
+import { UsersDataService } from './pages/users/services/users-data.service';
 import { entityConfig } from './entity-metadata';
 import { appReducer } from './store/app.state';
 import { SpinnerModule } from './shared/components/spinner/spinner.component';

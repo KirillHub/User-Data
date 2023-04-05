@@ -17,21 +17,15 @@ interface Location {
   };
 }
 
-interface Name {
-  title: string;
-  first: string;
-  last: string;
-}
-
 interface Picture {
   large: string;
   medium: string;
   thumbnail: string;
 }
 
-interface UserResult {
+export interface UserResult {
   gender: string;
-  name: Name;
+  name: string;
   location: Location;
   email: string;
   phone: string;

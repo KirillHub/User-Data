@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  templateUrl: 'profile.component.html',
-  styleUrls: [ './profile.component.scss' ]
+  templateUrl: 'profile-page.component.html',
+  styleUrls: [ './profile-page.component.scss' ]
 })
 
-export class ProfileComponent {
+export class ProfilePageComponent {
   employee: any;
   colCountByScreen: object;
 

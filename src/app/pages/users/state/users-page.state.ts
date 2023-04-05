@@ -1,7 +1,7 @@
-import UserData from '../models/User.model';
+import { UserResult } from '../models/User.model';
 
 export interface UserDataState {
-  results: UserData[] | [];
+  results: UserResult[];
 }
 
 export const initialState: UserDataState = {
