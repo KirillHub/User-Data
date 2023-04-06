@@ -1,31 +1,64 @@
 import { setLoadingSpinner } from 'src/app/store/Shared/shared.actions';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Injectable } from '@angular/core';
-import { map, mergeMap, catchError, throwError } from 'rxjs';
+import { Actions, createEffect } from '@ngrx/effects';
+import { Injectable, OnDestroy } from '@angular/core';
+import {
+  map,
+  catchError,
+  throwError,
+  Subscription,
+  Observable,
+  of,
+  switchMap,
+  combineLatest
+} from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.state';
 import { HttpErrorResponse } from '@angular/common/http';
-import { loadUserData, loadUserDataSuccess } from './users-page.actions';
+import { loadUsersDataSuccess } from './users-page.actions';
 import { ErrorService } from 'src/app/shared/services/error.service';
-import { UsersDataService } from 'src/app/pages/users/services/users-data.service';
+import { UserService } from 'src/app/shared/services/user.service';
+import { selectCustomUrl, selectFilteredOptions } from './users-page.selectors';
 
 @Injectable()
-export class UserDataEffects {
+export class UsersDataEffects implements OnDestroy {
+  url: Observable<string> = of('');
+  subscriptions: Subscription[] = [];
   constructor(
     private actions$: Actions,
-    private userDataService: UsersDataService,
+    private userDataService: UserService,
     private store: Store<AppState>,
     private errorService: ErrorService
   ) {}
 
-  loadUserData$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(loadUserData),
-      mergeMap(() => {
-        return this.userDataService.getAll().pipe(
+  loadUsersData$ = createEffect(() => {
+    return combineLatest([
+      this.store.select(selectCustomUrl),
+      this.store.select(selectFilteredOptions)
+    ]).pipe(
+      switchMap(([url, restUserParams]) => {
+        return this.userDataService.getUsersByFilters(url).pipe(
           map(data => {
             this.store.dispatch(setLoadingSpinner({ status: false }));
-            return loadUserDataSuccess({ userData: data });
+
+            let modifiedData = data;
+
+            if (restUserParams.includes('street')) {
+              modifiedData = modifiedData.map(item => {
+                const { street, ...rest } = item.location;
+                item.location = rest;
+                return item;
+              });
+            }
+
+            if (restUserParams.includes('city')) {
+              modifiedData = modifiedData.map(item => {
+                const { city, ...rest } = item.location;
+                item.location = rest;
+                return item;
+              });
+            }
+
+            return loadUsersDataSuccess({ userData: modifiedData });
           }),
           // eslint-disable-next-line rxjs/no-implicit-any-catch
           catchError((error: HttpErrorResponse) => {
@@ -37,4 +70,8 @@ export class UserDataEffects {
       })
     );
   });
+
+  ngOnDestroy(): void {
+    this.subscriptions?.forEach(subs => subs.unsubscribe());
+  }
 }

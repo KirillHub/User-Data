@@ -1,33 +1,53 @@
-import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, of, tap, Subscription } from 'rxjs';
+
+import { UserResult } from '../../../shared/models/User.model';
+import { selectUserData } from '../state/profile-page.selectors';
+import { loadUserData } from '../state/profile-page.actions';
+import { UserDataState } from '../state/profile-page.state';
+import UserProfile from '../../users/models/UserProfile';
 
 @Component({
   templateUrl: 'profile-page.component.html',
-  styleUrls: [ './profile-page.component.scss' ]
+  styleUrls: ['./profile-page.component.scss']
 })
-
-export class ProfilePageComponent {
-  employee: any;
+export class ProfilePageComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
   colCountByScreen: object;
+  userData$: Observable<UserResult[]> = of([]);
+  userData: UserProfile[] = [];
+  userPicture!: string;
 
-  constructor() {
-    this.employee = {
-      ID: 7,
-      FirstName: 'Sandra',
-      LastName: 'Johnson',
-      Prefix: 'Mrs.',
-      Position: 'Controller',
-      Picture: 'images/employees/06.png',
-      BirthDate: new Date('1974/11/5'),
-      HireDate: new Date('2005/05/11'),
-      /* tslint:disable-next-line:max-line-length */
-      Notes: 'Sandra is a CPA and has been our controller since 2008. She loves to interact with staff so if you`ve not met her, be certain to say hi.\r\n\r\nSandra has 2 daughters both of whom are accomplished gymnasts.',
-      Address: '4600 N Virginia Rd.'
-    };
+  constructor(private store: Store<UserDataState>) {
     this.colCountByScreen = {
       xs: 1,
       sm: 2,
       md: 3,
       lg: 4
     };
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(loadUserData());
+
+    this.subscription = this.store.select(selectUserData).subscribe(userData => {
+      if (userData.length === 0) {
+        this.store.dispatch(loadUserData());
+      }
+
+      this.userData = userData.map(user => {
+        const { ...location } = user.location;
+        const concatLocation = `${location.state} ${location.country} ${location.postcode}`;
+
+        const { picture, ...userWithoutPicture } = user;
+        this.userPicture = picture.large;
+        return { ...userWithoutPicture, location: concatLocation };
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

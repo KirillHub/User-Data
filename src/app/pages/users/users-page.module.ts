@@ -7,8 +7,8 @@ import { DxDataGridModule, DxTemplateModule } from 'devextreme-angular';
 import { FilterModule } from 'src/app/shared/components/filter/filter.component';
 import { SpinnerModule } from 'src/app/shared/components/spinner/spinner.component';
 import { UsersPageComponents } from './components/users-page.component';
-import { UserDataEffects } from './state/users-page.effects';
-import { userDataReducer } from './state/users-page.reducer';
+import { UsersDataEffects } from './state/users-page.effects';
+import { usersDataReducer } from './state/users-page.reducer';
 import { USERS_STATE_NAME } from './state/users-page.selectors';
 import { UsersRoutingModule } from './users-routing.module';
 
@@ -21,8 +21,8 @@ import { UsersRoutingModule } from './users-routing.module';
     RouterModule,
     UsersRoutingModule,
     FilterModule,
-    StoreModule.forFeature(USERS_STATE_NAME, userDataReducer),
-    EffectsModule.forFeature([UserDataEffects])
+    StoreModule.forFeature(USERS_STATE_NAME, usersDataReducer),
+    EffectsModule.forFeature([UsersDataEffects])
   ],
   declarations: [UsersPageComponents],
   exports: [UsersPageComponents]

@@ -1,38 +1,56 @@
+import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnChanges, SimpleChanges, NgModule } from '@angular/core';
+import { Component, NgModule, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+import Filter from '../../models/Filter.model';
+import { UsersDataState } from 'src/app/pages/users/state/users-page.state';
+import { customUrl, filteredOptions } from 'src/app/pages/users/state/users-page.actions';
 
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss']
 })
-export class FilterComponent implements OnInit, OnChanges {
-  protected filters = {
-    gender: false,
-    city: false,
-    street: false,
-    email: false,
-    phone: false
+export class FilterComponent {
+  protected filters: Filter = {
+    gender: true,
+    city: true,
+    street: true,
+    email: true,
+    phone: true
   };
+  currentUserSettings!: string[];
+  API_URL =
+    'https://randomuser.me/api/?inc=name,gender,email,phone,picture,location&noinfo&nat=us&results=100&seed=123';
+  restUserSettings!: string[]; // сюда войдут те параметры, которые внутри данных locations.
 
-  constructor() {}
+  constructor(private store: Store<UsersDataState>) {}
 
-  ngOnInit(): void {
-    // Проверяем наличие сохраненных значений в localStorage
-    //  const filters = JSON.parse(localStorage.getItem('filters'));
-    //  if (filters) {
-    //    this.filters = filters;
-    //  }
+  @Output() filterChanged = new EventEmitter<Filter>();
+
+  onFilterChange(): void {
+    this.filterChanged.emit(this.filters);
+
+    this.currentUserSettings = [];
+    for (const key of Object.keys(this.filters) as (keyof Filter)[]) {
+      if (this.filters[key] === false) {
+        this.currentUserSettings.push(key);
+      }
+    }
+
+    this.restUserSettings = this.currentUserSettings.filter(
+      params => params === 'street' || params === 'city'
+    );
+
+    this.store.dispatch(
+      customUrl({ initialUrl: this.API_URL, filterProperties: this.currentUserSettings })
+    );
+
+    this.store.dispatch(filteredOptions({ filterOpt: this.restUserSettings })); // прокидываю параметры и отфильтрую полученный object уже в effects
   }
 
   saveFilters(): void {
-    localStorage.setItem('filters', JSON.stringify(this.filters));
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    // Сохраняем изменения значений фильтров в localStorage
     localStorage.setItem('filters', JSON.stringify(this.filters));
   }
 }

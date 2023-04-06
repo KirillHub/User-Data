@@ -1,5 +1,7 @@
-export interface FilterSettings {
-  nationality?: string;
-  gender?: string;
-  city?: string;
-}
+export default interface Filter {
+	gender: boolean;
+	city: boolean;
+	street: boolean;
+	email: boolean;
+	phone: boolean;
+ }

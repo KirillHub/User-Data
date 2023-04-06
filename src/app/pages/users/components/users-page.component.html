@@ -1,51 +1,43 @@
 <h2 class="content-block">Users Data</h2>
 
-<app-filter></app-filter>
+<app-filter (filterChanged)="onFilterChanged($event)"></app-filter>
 
-<div *ngIf="userData$ | async as userData">
-  <dx-data-grid
-    class="dx-card wide-card"
-    id="gridContainer"
-    [dataSource]="userData$ | async"
-    [showBorders]="true"
-    [focusedRowEnabled]="true"
-    [focusedRowIndex]="0"
-    [columnAutoWidth]="true"
-    [columnHidingEnabled]="true"
+<dx-data-grid
+  class="dx-card wide-card"
+  id="gridContainer"
+  [dataSource]="userData"
+  [showBorders]="true"
+  [focusedRowEnabled]="true"
+  [focusedRowIndex]="0"
+  [columnAutoWidth]="true"
+  [columnHidingEnabled]="true"
+>
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
+  <dxo-filter-row [visible]="true"></dxo-filter-row>
+
+  <dxi-column
+    caption="Picture"
+    [width]="100"
+    [hidingPriority]="2"
+    [allowSorting]="false"
+    dataField="picture.medium"
+    cellTemplate="cellTemplate"
   >
-    <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
-    <dxo-filter-row [visible]="true"></dxo-filter-row>
+  </dxi-column>
 
-    <dxi-column
-      caption="Picture"
-      [width]="100"
-      [hidingPriority]="2"
-      [allowSorting]="false"
-      dataField="picture.medium"
-      cellTemplate="cellTemplate"
-    >
-    </dxi-column>
+  <dxi-column caption="Full Name" dataField="name"> </dxi-column>
+  <dxi-column dataField="gender" caption="Gender" [hidingPriority]="5"> </dxi-column>
+  <dxi-column dataField="phone" caption="Phone" [hidingPriority]="2"> </dxi-column>
+  <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
 
-    <dxi-column caption="Full Name" dataField="name"> </dxi-column>
-    <dxi-column dataField="gender" caption="Gender" [hidingPriority]="5"> </dxi-column>
-    <dxi-column dataField="phone" caption="Phone" [hidingPriority]="2"> </dxi-column>
-    <dxo-master-detail [enabled]="true" template="detail"></dxo-master-detail>
+  <div *dxTemplate="let picture of 'cellTemplate'">
+    <img [src]="picture.value" />
+  </div>
 
-    <div *dxTemplate="let picture of 'cellTemplate'">
-      <img [src]="picture.value" />
-    </div>
-
-    <div *dxTemplate="let user of 'detail'" class="dx-custom-user-data">
-      <p>City: {{ user.data.location.city }}</p>
-      <p>Street: {{ user.data.location.street.name }}</p>
-      <p>Email: {{ user.data.email }}</p>
-    </div>
-  </dx-data-grid>
-</div>
-
-<!-- <app-spinner *ngIf="isLoading$ | async"></app-spinner> -->
-<!-- <div>
-	<button class="btn btn-danger" (click)="onLoginSubmit()">click here</button>
-</div>
- -->
+  <div *dxTemplate="let user of 'detail'" class="dx-custom-user-data">
+    <p>City: {{ user.data.location.city }}</p>
+    <p>Street: {{ user.data.location.street.name }}</p>
+    <p>Email: {{ user.data.email }}</p>
+  </div>
+</dx-data-grid>

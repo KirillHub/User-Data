@@ -23,7 +23,7 @@ export class ScreenService {
       'screen-x-small': this.breakpointObserver.isMatched(Breakpoints.XSmall),
       'screen-small': this.breakpointObserver.isMatched(Breakpoints.Small),
       'screen-medium': this.breakpointObserver.isMatched(Breakpoints.Medium),
-      'screen-large': this.isLargeScreen(),
+      'screen-large': this.isLargeScreen()
     };
   }
 }

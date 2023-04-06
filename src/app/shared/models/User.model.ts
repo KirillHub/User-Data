@@ -1,9 +1,9 @@
 interface Location {
-  street: {
+  street?: {
     number: number;
     name: string;
   };
-  city: string;
+  city?: string;
   state: string;
   country: string;
   postcode: number;

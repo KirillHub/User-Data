@@ -12,7 +12,6 @@ import { SideNavOuterToolbarModule, SideNavInnerToolbarModule, SingleCardModule 
 import { ScreenService, AppInfoService } from './shared/services';
 import { AppRoutingModule } from './app-routing.module';
 import { ErrorComponent } from './shared/components/error-data/error-data.component';
-import { UsersDataService } from './pages/users/services/users-data.service';
 import { entityConfig } from './entity-metadata';
 import { appReducer } from './store/app.state';
 import { SpinnerModule } from './shared/components/spinner/spinner.component';
@@ -38,17 +37,7 @@ import { SpinnerModule } from './shared/components/spinner/spinner.component';
     DxLoadIndicatorModule
   ],
   exports: [],
-  providers: [
-    ScreenService,
-    UsersDataService,
-    AppInfoService,
-    EntityDataService,
-    EntityDefinitionService
-  ],
+  providers: [ScreenService, AppInfoService, EntityDataService, EntityDefinitionService],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(entityDateService: EntityDataService, usersDataService: UsersDataService) {
-    entityDateService.registerService('UsersData', usersDataService);
-  }
-}
+export class AppModule {}
